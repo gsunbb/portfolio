@@ -1,69 +1,55 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>디디의 포트폴리오</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="hero">
-    <div class="container">
-      <div class="hero-left">
-        <p class="greeting">Hey. I'm</p>
-        <h1 class="title">디디, <span>교사 & 크리에이터</span></h1>
-        <p class="description">
-          교육을 도구 삼아 실험하고, <br />
-          아이디어를 프랑켄슈타인처럼 꿰매는 개발자.
-        </p>
-        <a href="#contact" class="btn-black">Contact Me</a>
-      </div>
-      <div class="hero-right">
-        <img src="https://i.imgur.com/9mHBr3Y.png" alt="디디 캐릭터" />
-        <ul class="facts">
-          <li><strong>3+</strong> 교육용 웹앱</li>
-          <li><strong>15+</strong> 수업 프로젝트</li>
-          <li><strong>∞</strong> 실험정신</li>
-        </ul>
-      </div>
+    <div class="hero-text">
+      <h1>Hi, I'm <span class="highlight">Didi</span>,<br>A Creative Technologist & Educator</h1>
+      <p>낯선 걸 만들어보고 싶어요.<br />프랑켄슈타인처럼 살아 있는 아이디어를 꿰매고 실험합니다.</p>
+      <a class="btn" href="mailto:gsunbb@gmail.com">Contact Me</a>
+    </div>
+    <div class="hero-image">
+      <img src="ghost-character.png" alt="Didi Character"/>
     </div>
   </header>
 
-  <section class="projects">
-    <div class="container">
-      <h2>My Projects</h2>
-      <div class="project-grid">
-        <div class="project-card">
-          <h3>Amatta</h3>
-          <p>교사 업무 통합 웹앱</p>
-          <a href="https://amatta-edu.replit.app/" target="_blank">🔗 링크</a>
-        </div>
-        <div class="project-card">
-          <h3>Amatta Babel</h3>
-          <p>감정 중재 AI 도구</p>
-          <a href="https://amatta-babel.replit.app/" target="_blank">🔗 링크</a>
-        </div>
-        <div class="project-card">
-          <h3>반탈출 게임</h3>
-          <p>초등 추리 방탈출 수업</p>
-          <a href="https://script.google.com/macros/s/AKfycbzZO3CkigQ6xJVNlY9zF_FGiY3lXfls233dlRJvRTODxNh95zh7MT-lMliugiEPmAFoCQ/exec" target="_blank">🔗 링크</a>
-        </div>
-      </div>
-    </div>
+  <section class="stats">
+    <div>🛠 3 Projects</div>
+    <div>📧 gsunbb@gmail.com</div>
+    <div>📝 Blog: <a href="https://blog.naver.com/s_archive_">s_archive_</a></div>
   </section>
 
-  <section class="contact" id="contact">
-    <div class="container">
-      <h2>Contact</h2>
-      <p>📧 gsunbb@gmail.com</p>
-      <p>📓 <a href="https://blog.naver.com/s_archive_" target="_blank">블로그 바로가기</a></p>
+  <section class="portfolio">
+    <h2>PORTFOLIO</h2>
+    <div class="projects">
+      <div class="card">
+        <h3>Amatta</h3>
+        <p>교사용 일정·상담·행정 관리 도구</p>
+        <span>React · TypeScript · NeonDB</span>
+        <a href="https://amatta-edu.replit.app/" target="_blank">🔗 바로가기</a>
+      </div>
+      <div class="card">
+        <h3>Amatta Babel</h3>
+        <p>AI 감정 중재 시스템</p>
+        <span>React · Gemini API</span>
+        <a href="https://amatta-babel.replit.app/" target="_blank">🔗 바로가기</a>
+      </div>
+      <div class="card">
+        <h3>반탈출 게임</h3>
+        <p>초등 수업용 웹 방탈출</p>
+        <span>HTML · JS · Apps Script</span>
+        <a href="https://script.google.com/macros/s/AKfycbzZO3CkigQ6xJVNlY9zF_FGiY3lXfls233dlRJvRTODxNh95zh7MT-lMliugiEPmAFoCQ/exec" target="_blank">🔗 바로가기</a>
+      </div>
     </div>
   </section>
 
   <footer>
-    <p>© 2025 디디. 실험은 계속된다 🔧</p>
+    <p>© 2025 Didi. Made with 👻 & curiosity.</p>
   </footer>
 </body>
 </html>
-
