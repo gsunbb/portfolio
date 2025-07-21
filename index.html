@@ -1,55 +1,65 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>디디의 포트폴리오</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Didi's Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="hero">
-    <div class="hero-text">
-      <h1>Hi, I'm <span class="highlight">Didi</span>,<br>A Creative Technologist & Educator</h1>
-      <p>낯선 걸 만들어보고 싶어요.<br />프랑켄슈타인처럼 살아 있는 아이디어를 꿰매고 실험합니다.</p>
-      <a class="btn" href="mailto:gsunbb@gmail.com">Contact Me</a>
-    </div>
-    <div class="hero-image">
-      <img src="ghost-character.png" alt="Didi Character"/>
+    <div class="container">
+      <div class="intro-text">
+        <h1>Hi, I'm Didi.</h1>
+        <h2>I build <span class="highlight">playful & smart</span> digital tools for classrooms.</h2>
+        <p>Frankenstein-level experimentation with a purpose: to spark joy, efficiency, and curiosity in everyday education.</p>
+        <a href="#portfolio" class="btn">View Projects</a>
+      </div>
+      <div class="intro-image">
+        <img src="https://i.imgur.com/x0rpsLo.png" alt="Didi Character Illustration" />
+      </div>
     </div>
   </header>
 
-  <section class="stats">
-    <div>🛠 3 Projects</div>
-    <div>📧 gsunbb@gmail.com</div>
-    <div>📝 Blog: <a href="https://blog.naver.com/s_archive_">s_archive_</a></div>
+  <section id="stats" class="stats">
+    <div class="container">
+      <div class="stat"><span>3+</span> Web Projects</div>
+      <div class="stat"><span>6Y+</span> Teaching Experience</div>
+      <div class="stat"><span>∞</span> Curiosity</div>
+    </div>
   </section>
 
-  <section class="portfolio">
-    <h2>PORTFOLIO</h2>
-    <div class="projects">
-      <div class="card">
+  <section id="portfolio" class="portfolio">
+    <div class="container">
+      <h2>Selected Projects</h2>
+      <div class="project">
         <h3>Amatta</h3>
-        <p>교사용 일정·상담·행정 관리 도구</p>
-        <span>React · TypeScript · NeonDB</span>
-        <a href="https://amatta-edu.replit.app/" target="_blank">🔗 바로가기</a>
+        <p>All-in-one teacher planner for scheduling, reporting, and communication.</p>
+        <span class="tag">React</span>
+        <span class="tag">TypeScript</span>
+        <a href="https://amatta-edu.replit.app/" target="_blank">🔗 Visit</a>
       </div>
-      <div class="card">
+      <div class="project">
         <h3>Amatta Babel</h3>
-        <p>AI 감정 중재 시스템</p>
-        <span>React · Gemini API</span>
-        <a href="https://amatta-babel.replit.app/" target="_blank">🔗 바로가기</a>
+        <p>Emotion-sensitive message translator between teachers and parents.</p>
+        <span class="tag">Gemini API</span>
+        <span class="tag">React</span>
+        <a href="https://amatta-babel.replit.app/" target="_blank">🔗 Visit</a>
       </div>
-      <div class="card">
-        <h3>반탈출 게임</h3>
-        <p>초등 수업용 웹 방탈출</p>
-        <span>HTML · JS · Apps Script</span>
-        <a href="https://script.google.com/macros/s/AKfycbzZO3CkigQ6xJVNlY9zF_FGiY3lXfls233dlRJvRTODxNh95zh7MT-lMliugiEPmAFoCQ/exec" target="_blank">🔗 바로가기</a>
+      <div class="project">
+        <h3>Classroom Escape Game</h3>
+        <p>Web-based logic puzzle for elementary school escape room lesson.</p>
+        <span class="tag">HTML/CSS</span>
+        <span class="tag">Google Apps Script</span>
+        <a href="https://script.google.com/macros/s/AKfycbzZO3CkigQ6xJVNlY9zF_FGiY3lXfls233dlRJvRTODxNh95zh7MT-lMliugiEPmAFoCQ/exec" target="_blank">🔗 Play</a>
       </div>
     </div>
   </section>
 
-  <footer>
-    <p>© 2025 Didi. Made with 👻 & curiosity.</p>
+  <footer class="footer">
+    <p>👻 Didi's Lab — Curious, Creative, and a little Weird</p>
+    <p>📫 Contact: gsunbb@gmail.com | <a href="https://blog.naver.com/s_archive_" target="_blank">Blog</a></p>
   </footer>
 </body>
 </html>
