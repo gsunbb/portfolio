@@ -17,6 +17,7 @@
             line-height: 1.6;
             color: #cdd6f4;
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
         .container {
@@ -548,8 +549,8 @@
             <div class="intro-text">
                 <h1>안녕하세요. 저는 <span class="name">디디</span><br>
                     <span class="highlight">Educator</span><br>
-                    <span class="highlight">& Creator</span> 입니다</h1>
-                <p>익숙한 틀에서 낯선 것을 창조합니다. 프랑켄슈타인 박사사처럼 <span class="frankenstein">🧟‍♂️</span></p>
+                    <span class="highlight">&</span> Creator입니다</h1>
+                <p>익숙한 틀에서 낯선 것을 창조합니다. 프랑켄슈타인처럼 <span class="frankenstein">🧟‍♂️</span></p>
                 <button class="contact-btn">연락하기 →</button>
             </div>
 
@@ -590,7 +591,7 @@
             <p class="service-description">복잡한 일상을 편리하게 만드는 것이 목표입니다</p>
             <div class="service-box">
                 <h3>복세편살 프로젝트</h3>
-                <p>복잡한 세상을 편리하게 살아가기 위한 다양한 도구와 솔루션을 개발합니다. 교육 현장의 불편함을 해결하고, 복잡한 일상은 단순하게 만드는 것이 저의 미션입니다.</p>
+                <p>복잡한 세상을 편리하게 살아가기 위한 다양한 도구와 솔루션을 개발합니다. 교육 현장의 불편함을 해결하고, 일상의 복잡함을 단순하게 만드는 것이 저의 미션입니다.</p>
             </div>
         </section>
 
@@ -620,14 +621,14 @@
             <div class="about-content">
                 <p>교육자이자 크리에이터로서, 기존의 틀을 깨고 새로운 관점으로 문제를 바라봅니다.</p>
                 <p>교육 현장에서 마주하는 다양한 문제들을 기술과 창의성으로 해결하며, 복잡한 일상을 단순하고 편리하게 만드는 도구들을 개발합니다.</p>
-                <p>프랑켄슈타인 박사처럼 서로 다른 요소들을 결합해 새로운 가치를 창조하는 것이 저의 철학입니다. 때로는 실험적이고 때로는 실용적이지만, 그 안의 의미를 최우선으로 생각합니다.</p>
+                <p>프랑켄슈타인처럼 서로 다른 요소들을 결합해 새로운 가치를 창조하는 것이 저의 철학입니다. 때로는 실험적이고 때로는 실용적이지만, 항상 사용자의 경험을 최우선으로 생각합니다.</p>
             </div>
         </section>
 
         <!-- Portfolio -->
         <section class="portfolio">
             <h2>프로젝트</h2>
-            <p class="portfolio-subtitle">교육 현장의 문제를 해결하고 일상을 편리하게 만드는, 또는 그냥 재밌는 프로젝트들</p>
+            <p class="portfolio-subtitle">교육 현장의 문제를 해결하고 일상을 편리하게 만드는 프로젝트들</p>
             
             <div class="portfolio-grid">
                 <div class="portfolio-item">
@@ -753,8 +754,4 @@
             });
             
             const nextSection = (currentSection + 1) % sections.length;
-            sections[nextSection].scrollIntoView({ behavior: 'smooth' });
-        });
-    </script>
-</body>
-</html>
+            sections[nextSection].scrollIntoView({ behavior:
