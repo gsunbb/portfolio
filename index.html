@@ -4,534 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>디디 - Educator & Creator</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1e1e2e 0%, #2d1b69 50%, #11111b 100%);
-            line-height: 1.6;
-            color: #cdd6f4;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        /* Animated Background */
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.1;
-        }
-
-        .floating-element {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: rgba(137, 180, 250, 0.3);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 60px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #89b4fa;
-            text-shadow: 0 0 10px rgba(137, 180, 250, 0.5);
-        }
-
-        .menu-btn {
-            background: linear-gradient(45deg, #89b4fa, #cba6f7);
-            color: #11111b;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(137, 180, 250, 0.3);
-        }
-
-        .menu-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(137, 180, 250, 0.5);
-        }
-
-        /* Main Content */
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-            margin-bottom: 80px;
-        }
-
-        .intro-text h1 {
-            font-size: 48px;
-            font-weight: 900;
-            color: #cdd6f4;
-            margin-bottom: 20px;
-            line-height: 1.1;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .intro-text .highlight {
-            background: linear-gradient(45deg, #89b4fa, #cba6f7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-style: italic;
-            font-weight: 400;
-        }
-
-        .intro-text .name {
-            color: #f38ba8;
-            font-weight: 900;
-        }
-
-        .intro-text p {
-            color: #a6adc8;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-
-        .frankenstein {
-            font-size: 24px;
-            margin-left: 10px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .contact-btn {
-            background: linear-gradient(45deg, #f38ba8, #fab387);
-            color: #11111b;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(243, 139, 168, 0.3);
-        }
-
-        .contact-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(243, 139, 168, 0.5);
-        }
-
-        /* 3D Ghost */
-        .profile-section {
-            display: flex;
-            justify-content: center;
-            position: relative;
-            perspective: 1000px;
-        }
-
-        .ghost-container {
-            width: 300px;
-            height: 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transform-style: preserve-3d;
-            animation: ghostFloat 4s ease-in-out infinite;
-        }
-
-        @keyframes ghostFloat {
-            0%, 100% { transform: translateY(0px) rotateY(0deg); }
-            25% { transform: translateY(-10px) rotateY(90deg); }
-            50% { transform: translateY(-20px) rotateY(180deg); }
-            75% { transform: translateY(-10px) rotateY(270deg); }
-        }
-
-        .ghost {
-            width: 180px;
-            height: 220px;
-            background: linear-gradient(180deg, rgba(205, 214, 244, 0.9) 0%, rgba(205, 214, 244, 0.7) 100%);
-            border-radius: 90px 90px 0 0;
-            position: relative;
-            box-shadow: 0 0 30px rgba(205, 214, 244, 0.5);
-            animation: ghostGlow 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes ghostGlow {
-            0% { box-shadow: 0 0 30px rgba(205, 214, 244, 0.5); }
-            100% { box-shadow: 0 0 50px rgba(137, 180, 250, 0.8); }
-        }
-
-        .ghost::before {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 0;
-            width: 100%;
-            height: 40px;
-            background: linear-gradient(180deg, rgba(205, 214, 244, 0.7) 0%, transparent 100%);
-            border-radius: 0 0 20px 20px;
-        }
-
-        .ghost-eyes {
-            position: absolute;
-            top: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 30px;
-        }
-
-        .ghost-eye {
-            width: 20px;
-            height: 25px;
-            background: #11111b;
-            border-radius: 10px;
-            animation: blink 4s infinite;
-        }
-
-        @keyframes blink {
-            0%, 90%, 100% { height: 25px; }
-            95% { height: 2px; }
-        }
-
-        .ghost-mouth {
-            position: absolute;
-            top: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px;
-            height: 30px;
-            background: #11111b;
-            border-radius: 50%;
-            opacity: 0.7;
-        }
-
-        .stats {
-            position: absolute;
-            right: -20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(30, 30, 46, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 30px 25px;
-            border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            border: 1px solid rgba(137, 180, 250, 0.2);
-        }
-
-        .stat-item {
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .stat-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .stat-number {
-            font-size: 28px;
-            font-weight: bold;
-            color: #89b4fa;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #a6adc8;
-            text-transform: uppercase;
-        }
-
-        /* Services */
-        .services {
-            margin-bottom: 80px;
-            text-align: center;
-        }
-
-        .services h2 {
-            font-size: 36px;
-            color: #f38ba8;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(243, 139, 168, 0.5);
-        }
-
-        .service-description {
-            font-size: 20px;
-            color: #a6adc8;
-            margin-bottom: 40px;
-            font-weight: 300;
-        }
-
-        .service-box {
-            background: rgba(30, 30, 46, 0.6);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(137, 180, 250, 0.2);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        /* Trusted By - 복세편살 스타일 */
-        .lifestyle-section {
-            margin-bottom: 80px;
-            text-align: center;
-        }
-
-        .lifestyle-section h2 {
-            font-size: 32px;
-            color: #cba6f7;
-            margin-bottom: 30px;
-        }
-
-        .lifestyle-tags {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .lifestyle-tag {
-            background: rgba(203, 166, 247, 0.2);
-            color: #cba6f7;
-            padding: 12px 24px;
-            border-radius: 25px;
-            border: 1px solid rgba(203, 166, 247, 0.3);
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .lifestyle-tag:hover {
-            background: rgba(203, 166, 247, 0.3);
-            transform: translateY(-2px);
-        }
-
-        /* About Section */
-        .about-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            margin-bottom: 80px;
-        }
-
-        .about-title {
-            font-size: 42px;
-            font-weight: 900;
-            color: #89b4fa;
-            line-height: 1.1;
-            text-transform: uppercase;
-            text-shadow: 0 0 20px rgba(137, 180, 250, 0.3);
-        }
-
-        .about-content p {
-            color: #a6adc8;
-            margin-bottom: 20px;
-            line-height: 1.7;
-            font-size: 16px;
-        }
-
-        /* Portfolio */
-        .portfolio {
-            margin-bottom: 60px;
-        }
-
-        .portfolio h2 {
-            font-size: 36px;
-            font-weight: bold;
-            color: #f38ba8;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(243, 139, 168, 0.5);
-        }
-
-        .portfolio-subtitle {
-            color: #a6adc8;
-            margin-bottom: 40px;
-        }
-
-        .portfolio-grid {
-            display: grid;
-            gap: 30px;
-        }
-
-        .portfolio-item {
-            background: rgba(30, 30, 46, 0.6);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid rgba(137, 180, 250, 0.2);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-        }
-
-        .portfolio-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px rgba(137, 180, 250, 0.2);
-        }
-
-        .portfolio-image {
-            width: 100%;
-            height: 250px;
-            background: linear-gradient(135deg, #89b4fa 0%, #cba6f7 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #11111b;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .portfolio-info {
-            padding: 30px;
-        }
-
-        .project-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #cdd6f4;
-            margin-bottom: 8px;
-        }
-
-        .project-category {
-            font-size: 14px;
-            color: #f38ba8;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
-        .project-description {
-            color: #a6adc8;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .tech-tag {
-            background: rgba(137, 180, 250, 0.2);
-            color: #89b4fa;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            border: 1px solid rgba(137, 180, 250, 0.3);
-        }
-
-        .view-btn {
-            background: linear-gradient(45deg, #f38ba8, #fab387);
-            color: #11111b;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-        .view-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(243, 139, 168, 0.4);
-        }
-
-        /* Contact Section */
-        .contact-section {
-            text-align: center;
-            background: rgba(30, 30, 46, 0.6);
-            backdrop-filter: blur(10px);
-            padding: 50px;
-            border-radius: 20px;
-            border: 1px solid rgba(137, 180, 250, 0.2);
-        }
-
-        .contact-section h2 {
-            font-size: 32px;
-            color: #89b4fa;
-            margin-bottom: 30px;
-        }
-
-        .contact-links {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-
-        .contact-link {
-            background: rgba(137, 180, 250, 0.1);
-            color: #89b4fa;
-            padding: 15px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            border: 1px solid rgba(137, 180, 250, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .contact-link:hover {
-            background: rgba(137, 180, 250, 0.2);
-            transform: translateY(-2px);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .main-content, .about-section {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .intro-text h1 {
-                font-size: 36px;
-            }
-
-            .stats {
-                position: static;
-                transform: none;
-                margin-top: 30px;
-            }
-
-            .profile-section {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .contact-links {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Animated Background -->
@@ -625,13 +98,56 @@
             </div>
         </section>
 
+        <!-- Tech Stack -->
+        <section class="tech-stack-section">
+            <h2>💡 아이디어를 현실로 만드는 도구들</h2>
+            <div class="tech-stack-grid">
+                <div class="tech-category">
+                    <h3>Frontend</h3>
+                    <ul>
+                        <li>React</li>
+                        <li>TypeScript</li>
+                        <li>Vite</li>
+                        <li>Tailwind CSS</li>
+                        <li>HTML5</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h3>Backend</h3>
+                    <ul>
+                        <li>Next.js API Routes</li>
+                        <li>Drizzle ORM</li>
+                        <li>PostgreSQL</li>
+                        <li>Google Apps Script</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h3>AI & Data</h3>
+                    <ul>
+                        <li>Gemini Pro API</li>
+                        <li>OpenAI</li>
+                        <li>Chart.js / D3.js</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h3>Auth & DevOps</h3>
+                    <ul>
+                        <li>Google OAuth</li>
+                        <li>GitHub Actions</li>
+                        <li>Railway / Netlify</li>
+                        <li>GitHub Pages</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
         <!-- Portfolio -->
         <section class="portfolio">
             <h2>프로젝트</h2>
             <p class="portfolio-subtitle">교육 현장의 문제를 해결하고 일상을 편리하게 만드는, 또는 재미로 시작한 프로젝트들</p>
             
             <div class="portfolio-grid">
-                <div class="portfolio-item">
+                <div class="portfolio-item" data-modal-target="amatta-modal">
                     <div class="portfolio-image">
                         Amatta - All-in-One 교사 도구
                     </div>
@@ -646,11 +162,11 @@
                             <span class="tech-tag">NeonDB</span>
                             <span class="tech-tag">Drizzle ORM</span>
                         </div>
-                        <a href="https://amatta-edu.replit.app/" target="_blank" class="view-btn">View Project 🔗</a>
+                        <a href="https://amatta-edu.replit.app/" target="_blank" rel="noopener noreferrer" class="view-btn">View Project 🔗</a>
                     </div>
                 </div>
 
-                <div class="portfolio-item">
+                <div class="portfolio-item" data-modal-target="babel-modal">
                     <div class="portfolio-image">
                         Amatta Babel - AI 감정 번역
                     </div>
@@ -663,11 +179,11 @@
                             <span class="tech-tag">React</span>
                             <span class="tech-tag">Zustand</span>
                         </div>
-                        <a href="https://amatta-babel.replit.app/" target="_blank" class="view-btn">View Project 🔗</a>
+                        <a href="https://amatta-babel.replit.app/" target="_blank" rel="noopener noreferrer" class="view-btn">View Project 🔗</a>
                     </div>
                 </div>
 
-                <div class="portfolio-item">
+                <div class="portfolio-item" data-modal-target="escape-modal">
                     <div class="portfolio-image">
                         반탈출 게임 - 교육용 추리 게임
                     </div>
@@ -681,7 +197,7 @@
                             <span class="tech-tag">JavaScript</span>
                             <span class="tech-tag">Google Apps Script</span>
                         </div>
-                        <a href="https://script.google.com/macros/s/AKfycbzZO3CkigQ6xJVNlY9zF_FGiY3lXfls233dlRJvRTODxNh95zh7MT-lMliugiEPmAFoCQ/exec" target="_blank" class="view-btn">View Project 🔗</a>
+                        <a href="https://script.google.com/macros/s/AKfycbzZO3CkigQ6xJVNlY9zF_FGiY3lXfls233dlRJvRTODxNh95zh7MT-lMliugiEPmAFoCQ/exec" target="_blank" rel="noopener noreferrer" class="view-btn">View Project 🔗</a>
                     </div>
                 </div>
             </div>
@@ -692,66 +208,90 @@
             <h2>함께 만들어요!</h2>
             <div class="contact-links">
                 <a href="mailto:gsunbb@gmail.com" class="contact-link">📧 Email</a>
-                <a href="https://blog.naver.com/s_archive_" target="_blank" class="contact-link">📝 Blog</a>
+                <a href="https://blog.naver.com/s_archive_" target="_blank" rel="noopener noreferrer" class="contact-link">📝 Blog</a>
             </div>
         </section>
     </div>
 
-    <script>
-        // Animated background
-        function createFloatingElements() {
-            const bgAnimation = document.getElementById('bgAnimation');
-            for (let i = 0; i < 20; i++) {
-                const element = document.createElement('div');
-                element.className = 'floating-element';
-                element.style.left = Math.random() * 100 + '%';
-                element.style.top = Math.random() * 100 + '%';
-                element.style.animationDelay = Math.random() * 6 + 's';
-                element.style.animationDuration = (Math.random() * 4 + 4) + 's';
-                bgAnimation.appendChild(element);
-            }
-        }
+    <!-- Modals -->
+    <div id="amatta-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>🛠️ Amatta</h2>
+            <h3>🧩 문제 정의</h3>
+            <p>교사로서 반복되는 행정 업무와 학생·학부모 상담 기록 정리가 너무 번거로웠습니다. 특히 상담 기록, 일정 관리, 업무 요청 처리가 분산되어 있어, 업무 흐름이 단절되고 중요한 기록이 누락되기 쉬웠습니다. 이 문제를 해결하고자, 일정·상담·업무를 통합 관리할 수 있는 웹앱 Amatta를 기획하게 되었습니다.</p>
+            <h3>👩‍💻 나의 역할 (My Role)</h3>
+            <p>100% 개인 프로젝트로, 기획, 프론트엔드(React+TS), 백엔드(Next.js, Drizzle), 인증(Google OAuth), AI 기능(Gemini API) 등 모든 부분을 담당했습니다.</p>
+            <h3>🎯 어려움과 해결 과정</h3>
+            <p><strong>문제:</strong> 학생 상담 기록에 감정 분석을 적용할 때, 일관된 정제 텍스트를 만들기 어려웠습니다.</p>
+            <p><strong>해결:</strong> 사용자 입력을 사전 처리하는 텍스트 클렌징 파이프라인을 개발해, 모델 성능을 안정화시켰습니다.</p>
+            <p><strong>배운 점:</strong> 실제 사용자 환경에서는 예외 케이스가 많고, AI 기능의 정확도보다 맥락적 사용성이 더 중요하다는 걸 체감했습니다.</p>
+            <h3>🛠️ 기술 스택</h3>
+            <div class="project-tech-badges">
+                <div><strong>Frontend:</strong> <span class="tech-badge">React 18</span> <span class="tech-badge">TypeScript</span> <span class="tech-badge">Vite</span> <span class="tech-badge">Wouter</span> <span class="tech-badge">Tailwind CSS</span> <span class="tech-badge">shadcn/ui</span> <span class="tech-badge">React Hook Form</span> <span class="tech-badge">TanStack Query</span> <span class="tech-badge">Lucide React</span></div>
+                <div><strong>Backend:</strong> <span class="tech-badge">Express.js</span> <span class="tech-badge">TypeScript</span> <span class="tech-badge">Passport.js</span> <span class="tech-badge">JWT</span> <span class="tech-badge">bcryptjs</span> <span class="tech-badge">express-session</span></div>
+                <div><strong>Database & ORM:</strong> <span class="tech-badge">PostgreSQL (Neon)</span> <span class="tech-badge">Drizzle ORM</span> <span class="tech-badge">Drizzle Kit</span> <span class="tech-badge">@neondatabase/serverless</span></div>
+                <div><strong>AI & API:</strong> <span class="tech-badge">Google Gemini API</span> <span class="tech-badge">@google/genai</span></div>
+                <div><strong>Dev Tools:</strong> <span class="tech-badge">tsx</span> <span class="tech-badge">PostCSS</span> <span class="tech-badge">Zod</span> <span class="tech-badge">date-fns</span></div>
+            </div>
+            <a href="https://github.com/your-repo/amatta" target="_blank" rel="noopener noreferrer" class="view-btn">View Code 💻</a>
+        </div>
+    </div>
 
-        // Portfolio item hover effects
-        document.querySelectorAll('.portfolio-item').forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-10px) scale(1.02)';
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
+    <div id="babel-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>🛠️ Amatta Babel</h2>
+            <h3>🧩 문제 정의</h3>
+            <p>“학생 감정 기록을 자동으로 분석해주고, 감정 충돌 없는 중재 메시지를 추천해주는 도구가 있다면?” 이 생각에서 출발했습니다. 교사가 학생의 감정을 더 잘 이해하고, 학부모와의 소통에서 발생할 수 있는 갈등을 줄이는 것을 목표로 했습니다.</p>
+            <h3>👩‍💻 나의 역할 (My Role)</h3>
+            <p>100% 개인 프로젝트로, 기획, 프론트엔드(React), 백엔드(Next.js), AI 통합(Gemini Pro), 데이터 시각화(Chart.js)까지 전 과정을 직접 개발했습니다.</p>
+            <h3>🎯 어려움과 해결 과정</h3>
+            <p><strong>문제:</strong> 감정 분석 결과가 실제 맥락과 어긋나는 경우가 종종 발생했습니다.</p>
+            <p><strong>해결:</strong> 감정 기반 중재 메시지 생성 시, 상대방의 관점 정보를 추가로 입력받는 UX 흐름을 설계하여 양방향 이해 기반 추천으로 개선했습니다.</p>
+            <p><strong>배운 점:</strong> “정확한 분석보다, 적절한 공감이 중요하다”는 것을 기술로 구현하는 실험이었습니다.</p>
+            <h3>🛠️ 기술 스택</h3>
+            <div class="project-tech-badges">
+                <div><strong>Frontend:</strong> <span class="tech-badge">React 18</span> <span class="tech-badge">TypeScript</span> <span class="tech-badge">Vite</span> <span class="tech-badge">shadcn/ui</span> <span class="tech-badge">Radix UI</span> <span class="tech-badge">Tailwind CSS</span> <span class="tech-badge">TanStack Query</span> <span class="tech-badge">Wouter</span> <span class="tech-badge">Lucide React</span> <span class="tech-badge">React Hook Form</span> <span class="tech-badge">Zod</span></div>
+                <div><strong>Backend:</strong> <span class="tech-badge">Node.js</span> <span class="tech-badge">Express.js</span> <span class="tech-badge">TypeScript</span> <span class="tech-badge">tsx</span> <span class="tech-badge">esbuild</span></div>
+                <div><strong>Database & Storage:</strong> <span class="tech-badge">PostgreSQL (Neon)</span> <span class="tech-badge">@neondatabase/serverless</span> <span class="tech-badge">Drizzle ORM</span> <span class="tech-badge">Drizzle Kit</span> <span class="tech-badge">In-memory storage</span></div>
+                <div><strong>AI & External:</strong> <span class="tech-badge">Google Gemini AI</span> <span class="tech-badge">Emotion analysis</span> <span class="tech-badge">Text translation</span> <span class="tech-badge">Content filtering</span></div>
+                <div><strong>Dev Tools:</strong> <span class="tech-badge">npm</span> <span class="tech-badge">TanStack Query</span> <span class="tech-badge">apiRequest</span> <span class="tech-badge">Custom toast</span></div>
+            </div>
+            <a href="https://github.com/your-repo/amatta-babel" target="_blank" rel="noopener noreferrer" class="view-btn">View Code 💻</a>
+        </div>
+    </div>
 
-        // Ghost interaction
-        document.querySelector('.ghost-container').addEventListener('click', function() {
-            this.style.animation = 'ghostFloat 0.5s ease-in-out';
-            setTimeout(() => {
-                this.style.animation = 'ghostFloat 4s ease-in-out infinite';
-            }, 500);
-        });
+    <div id="escape-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>🧩 수업용 반탈출 게임</h2>
+            <h3>🎯 문제 정의</h3>
+            <p>"애들 수업 시간에 집중이 안 된다면? 그럼 아예 수업을 게임으로 만들어보자!" 초등 고학년의 몰입도 높은 수업을 위해, 단순 퀴즈가 아닌 '목숨'과 '추리'가 있는 진짜 게임을 만들고 싶었습니다.</p>
+            <h3>👩‍💻 나의 역할 (My Role)</h3>
+            <p>100% 개인 개발 프로젝트로, 전체 스토리라인 기획, 문제 설계, 프론트엔드(HTML/CSS/JS), 백엔드/자동화(Google Apps Script), UI 디자인까지 모두 담당했습니다. 목숨 부활을 위해 "장기자랑"을 해야 하는 개그 요소도 넣었습니다.🤣</p>
+            <h3>🎯 어려움과 해결 과정</h3>
+            <p><strong>문제:</strong> 교실 PC 보안 설정으로 인해 Apps Script 실행이 제한되었습니다.</p>
+            <p><strong>해결:</strong> GitHub Pages와 구글 웹 앱 배포를 병행해 안정성을 확보했습니다.</p>
+            <p><strong>배운 점:</strong> 기술도 중요하지만, 사용 환경에 맞춘 설계가 더 중요하다는 것을 깨달았습니다.</p>
+            <h3>🛠️ 기술 스택</h3>
+            <div class="project-tech-badges">
+                <div><strong>프론트엔드:</strong> <span class="tech-badge">HTML5</span> <span class="tech-badge">CSS3</span> <span class="tech-badge">JavaScript (Vanilla JS)</span></div>
+                <div><strong>백엔드:</strong> <span class="tech-badge">Google Apps Script (GAS)</span></div>
+                <div><strong>서버-클라이언트 통신:</strong> <span class="tech-badge">google.script.run</span></div>
+                <div><strong>데이터 저장소:</strong> <span class="tech-badge">localStorage</span></div>
+                <div><strong>배포:</strong> <span class="tech-badge">GAS Web App</span></div>
+                <div><strong>템플릿 시스템:</strong> <span class="tech-badge">GAS HtmlService</span></div>
+                <div><strong>디버깅:</strong> <span class="tech-badge">console.log</span> <span class="tech-badge">HTML 디버그 영역</span></div>
+                <div><strong>이벤트 처리:</strong> <span class="tech-badge">addEventListener</span></div>
+                <div><strong>애니메이션:</strong> <span class="tech-badge">@keyframes fadeIn/fadeOut</span></div>
+                <div><strong>상태 관리:</strong> <span class="tech-badge">localStorage</span></div>
+                <div><strong>보안 설정:</strong> <span class="tech-badge">GAS Web App 권한 설정</span></div>
+            </div>
+            <a href="https://github.com/your-repo/escape-game" target="_blank" rel="noopener noreferrer" class="view-btn">View Code 💻</a>
+        </div>
+    </div>
 
-        // Contact button interaction
-        document.querySelector('.contact-btn').addEventListener('click', function() {
-            document.querySelector('.contact-section').scrollIntoView({ 
-                behavior: 'smooth' 
-            });
-        });
-
-        // Initialize
-        createFloatingElements();
-
-        // Menu button functionality
-        document.querySelector('.menu-btn').addEventListener('click', function() {
-            const sections = document.querySelectorAll('section');
-            let currentSection = 0;
-            
-            sections.forEach((section, index) => {
-                const rect = section.getBoundingClientRect();
-                if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
-                    currentSection = index;
-                }
-            });
-            
-            const nextSection = (currentSection + 1) % sections.length;
-            sections[nextSection].scrollIntoView({ behavior:
+    <script src="script.js"></script>
+</body>
+</html>
