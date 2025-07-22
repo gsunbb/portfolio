@@ -234,7 +234,6 @@
                 <div><strong>AI & API:</strong> <span class="tech-badge">Google Gemini API</span> <span class="tech-badge">@google/genai</span></div>
                 <div><strong>Dev Tools:</strong> <span class="tech-badge">tsx</span> <span class="tech-badge">PostCSS</span> <span class="tech-badge">Zod</span> <span class="tech-badge">date-fns</span></div>
             </div>
-            <a href="https://github.com/your-repo/amatta" target="_blank" rel="noopener noreferrer" class="view-btn">View Code 💻</a>
             <h3>🧪 Behind the Scene</h3>
             <div class="project-bts">
                 <p><strong>문제 정의</strong><br>솔직히 말하자면 나는 꽤 귀차니스트다. 머릿속은 산발적이고, 책상 위는 그보다 더하다. 늘 ‘비서가 하나 있었으면’ 싶었다. 내가 개떡같이 말해도 찰떡같이 이해해주는 비서. 그러다 문득, “만들면 되잖아?”라는 전형적인 스스로 고생하는 생각이 시작됐다.</p>
@@ -261,11 +260,46 @@
             <div class="project-tech-badges">
                 <div><strong>Frontend:</strong> <span class="tech-badge">React 18</span> <span class="tech-badge">TypeScript</span> <span class="tech-badge">Vite</span> <span class="tech-badge">shadcn/ui</span> <span class="tech-badge">Radix UI</span> <span class="tech-badge">Tailwind CSS</span> <span class="tech-badge">TanStack Query</span> <span class="tech-badge">Wouter</span> <span class="tech-badge">Lucide React</span> <span class="tech-badge">React Hook Form</span> <span class="tech-badge">Zod</span></div>
                 <div><strong>Backend:</strong> <span class="tech-badge">Node.js</span> <span class="tech-badge">Express.js</span> <span class="tech-badge">TypeScript</span> <span class="tech-badge">tsx</span> <span class="tech-badge">esbuild</span></div>
-                <div><strong>Database & Storage:</strong> <span class="tech-badge">PostgreSQL (Neon)</span> <span class="tech-badge">@neondatabase/serverless</span> <이 너무 순수하게 봤어...</p>
-                <p><strong>가장 애정하는 디테일</strong><br>학생들이 진짜 머리를 맞대고 추론하는 모습. 수업 중 배운 지식을 써먹는 그 순간. “아... 가르친 게 헛되진 않았구나.” 잠깐 감동했지만, 다음 문제에서 단체로 컨닝하는 걸 보고 다시 리셋되었다.</p>
+                <div><strong>Database & Storage:</strong> <span class="tech-badge">PostgreSQL (Neon)</span> <span class="tech-badge">@neondatabase/serverless</span></div>
+            </div>
+            <h3>🧪 Behind the Scene</h3>
+            <div class="project-bts">
+                <p><strong>문제 정의</strong><br>나는 말을 아끼는 편은 아니지만, 누군가에게 내 말이 어떻게 들릴지는 알 수 없다. 특히 학부모-교사 간 대화에서, 감정과 맥락은 종종 다른 언어처럼 느껴졌다. 그래서 생각했다. '우리에게 필요한 건 감정의 바벨탑이다.' 해석기는 결국 이해에 대한 의지에서 출발한다.</p>
+                <p><strong>나의 역할</strong><br>기획, 개발, 감정표현 DB 설계까지 전부 내 손으로. 실은 내 감정이 제일 먼저 번역돼야 했던 것 같다.</p>
+                <p><strong>어려움과 해결 과정</strong><br>가장 큰 고민은 '어디까지 공감해야 하는가?'였다. 과하게 공감하면 교사의 전문성이 흔들릴 수 있고, 반대로 무심하면 불통이다. 애매한 그 지점을 AI에게 맡기기로 했다. AI가 내게 준 번역을 보며 나도 꽤 반성했다. “아, 그 민원이 그런 의미였구나...” (물론 지금도 이해 못 하는 것도 있다)</p>
+                <p><strong>가장 애정하는 디테일</strong><br>블로그에 올렸을 때, 한 선생님이 '교권 보호를 위한 기능'이라며 달아주신 댓글. 이건 그냥 내가 쓰려고 만든 건데, 혼자만 쓰지 않아도 된다는 게 큰 위로였다.</p>
             </div>
         </div>
     </div>
+
+    <div id="escape-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>🛠️ Amatta Babel</h2>
+            <h3>🧩 문제 정의</h3>
+            <p>“학생 감정 기록을 자동으로 분석해주고, 감정 충돌 없는 중재 메시지를 추천해주는 도구가 있다면?” 이 생각에서 출발했습니다. 교사가 학생의 감정을 더 잘 이해하고, 학부모와의 소통에서 발생할 수 있는 갈등을 줄이는 것을 목표로 했습니다.</p>
+            <h3>👩‍💻 나의 역할 (My Role)</h3>
+            <p>100% 개인 프로젝트로, 기획, 프론트엔드(React), 백엔드(Next.js), AI 통합(Gemini Pro), 데이터 시각화(Chart.js)까지 전 과정을 직접 개발했습니다.</p>
+            <h3>🎯 어려움과 해결 과정</h3>
+            <p><strong>문제:</strong> 감정 분석 결과가 실제 맥락과 어긋나는 경우가 종종 발생했습니다.</p>
+            <p><strong>해결:</strong> 감정 기반 중재 메시지 생성 시, 상대방의 관점 정보를 추가로 입력받는 UX 흐름을 설계하여 양방향 이해 기반 추천으로 개선했습니다.</p>
+            <p><strong>배운 점:</strong> “정확한 분석보다, 적절한 공감이 중요하다”는 것을 기술로 구현하는 실험이었습니다.</p>
+            <h3>🛠️ 기술 스택</h3>
+            <div class="project-tech-badges">
+                <div><strong>Frontend:</strong> <span class="tech-badge">React 18</span> <span class="tech-badge">TypeScript</span> <span class="tech-badge">Vite</span> <span class="tech-badge">shadcn/ui</span> <span class="tech-badge">Radix UI</span> <span class="tech-badge">Tailwind CSS</span> <span class="tech-badge">TanStack Query</span> <span class="tech-badge">Wouter</span> <span class="tech-badge">Lucide React</span> <span class="tech-badge">React Hook Form</span> <span class="tech-badge">Zod</span></div>
+                <div><strong>Backend:</strong> <span class="tech-badge">Node.js</span> <span class="tech-badge">Express.js</span> <span class="tech-badge">TypeScript</span> <span class="tech-badge">tsx</span> <span class="tech-badge">esbuild</span></div>
+                <div><strong>Database & Storage:</strong> <span class="tech-badge">PostgreSQL (Neon)</span> <span class="tech-badge">@neondatabase/serverless</span> <이 너무 순수하게 봤어...</p>
+            </div>
+            <h3>🧪 Behind the Scene</h3>
+            <div class="project-bts">
+                <p><strong>문제 정의</strong><br>어느 날 인디스쿨에서 본 반탈출 수업 자료. 그걸 만든 선생님이 너무 멋져 보였고, '나도 하고 싶다'가 동기가 되었다. 물론 만들다 보니 이건 거의 전쟁이었다.</p>
+                <p><strong>나의 역할</strong><br>구상, 디자인, 문제 구성, 개발, 테스팅, 난이도 조절까지 전부. 여긴 팀이 없었다. 나와 나의 30개 크롬 탭이 전부였다.</p>
+                <p><strong>어려움과 해결 과정</strong><br>새로고침을 누르면 목숨이 리셋되는 버그가 있었다. 그런데 아이들은 알았고, 나는 몰랐다. 더 충격적인 건, 아이들이 컨닝을 할 줄 몰랐다는 거다. 얘들아, 선생님이 너무 순수하게 봤어...</p>
+                <p><strong>가장 애정하는 디테일</strong><br>학생들이 진짜 머리를 맞대고 추론하는 모습. 수업 중 배운 지식을 써먹는 그 순간. '아... 가르친 게 헛되진 않았구나.' 잠깐 감동했지만, 다음 문제에서 단체로 컨닝하는 걸 보고 다시 리셋되었다.</p>
+            </div>
+        </div>
+    </div>
+        
 
     <script src="script.js"></script>
 </body>
