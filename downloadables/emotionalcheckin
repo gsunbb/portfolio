@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리반 감정 체크인 시스템 V3.5</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .emotion-card {
+            transition: all 0.3s ease;
+            transform: scale(1);
+            position: relative;
+            overflow: hidden;
+        }
+        .emotion-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+        .emotion-card:active {
+            transform: scale(0.98);
+        }
+        .tab-active {
+            background: rgba(255,255,255,0.2);
+            border-bottom: 3px solid #fff;
+        }
+        .chart-container {
+            height: 400px;
+        }
+        .quantity-control {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: all 0.3s ease;
+        }
+        .emotion-card:hover .quantity-control {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+        }
+        .quantity-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+        .quantity-btn:active {
+            transform: scale(0.9);
+        }
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .quantity-btn:disabled:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1);
+        }
+        .quantity-display {
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            min-width: 40px;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .emotion-main {
+            padding: 24px 16px 48px 16px;
+            cursor: pointer;
+            height: 100%;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .emotion-emoji {
+            font-size: 3rem;
+            margin-bottom: 8px;
+        }
+        .emotion-name {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .emotion-count {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+        .mobile-controls {
+            display: none;
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        @media (max-width: 768px) {
+            .quantity-control {
+                position: static;
+                opacity: 1;
+                transform: translateY(0);
+                background: rgba(0,0,0,0.15);
+                border-top: none;
+                border-radius: 0 0 12px 12px;
+            }
+            .emotion-card:hover .quantity-control {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <div class="container mx-auto px-4 py-6">
+        <!-- 헤더 -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">우리반 감정 체크인</h1>
+            <p class="text-white opacity-80 text-lg" id="currentDate"></p>
+        </div>
+
+        <!-- 탭 네비게이션 -->
+        <div class="flex justify-center mb-6">
+            <div class="bg-white bg-opacity-20 rounded-lg p-1 flex">
+                <button onclick="showTab('checkin')" id="tab-checkin" class="tab-active px-6 py-2 rounded-lg text-white font-medium transition-all">체크인</button>
+                <button onclick="showTab('today-stats')" id="tab-today-stats" class="px-6 py-2 rounded-lg text-white font-medium transition-all">오늘 통계</button>
+                <button onclick="showTab('weekly-stats')" id="tab-weekly-stats" class="px-6 py-2 rounded-lg text-white font-medium transition-all">주간 통계</button>
+                <button onclick="showTab('admin')" id="tab-admin" class="px-6 py-2 rounded-lg text-white font-medium transition-all">관리자</button>
+            </div>
+        </div>
+
+        <!-- 체크인 페이지 -->
+        <div id="checkin-page" class="tab-content">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-white mb-4">오늘 기분은 어떠세요?</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="emotion-card bg-yellow-400 hover:bg-yellow-300 text-white rounded-xl shadow-lg relative">
+                    <div class="emotion-main" onclick="addEmotion('기쁨')">
+                        <div class="emotion-emoji">😊</div>
+                        <div class="emotion-name">기쁨/즐거움</div>
+                        <div class="emotion-count" id="count-기쁨">0명</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="decreaseEmotion('기쁨')" id="decrease-기쁨">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <div class="quantity-display" id="quantity-기쁨">0</div>
+                        <button class="quantity-btn" onclick="increaseEmotion('기쁨')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="emotion-card bg-gray-400 hover:bg-gray-300 text-white rounded-xl shadow-lg relative">
+                    <div class="emotion-main" onclick="addEmotion('보통')">
+                        <div class="emotion-emoji">😐</div>
+                        <div class="emotion-name">보통/평온</div>
+                        <div class="emotion-count" id="count-보통">0명</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="decreaseEmotion('보통')" id="decrease-보통">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <div class="quantity-display" id="quantity-보통">0</div>
+                        <button class="quantity-btn" onclick="increaseEmotion('보통')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="emotion-card bg-blue-500 hover:bg-blue-400 text-white rounded-xl shadow-lg relative">
+                    <div class="emotion-main" onclick="addEmotion('슬픔')">
+                        <div class="emotion-emoji">😢</div>
+                        <div class="emotion-name">슬픔/우울</div>
+                        <div class="emotion-count" id="count-슬픔">0명</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="decreaseEmotion('슬픔')" id="decrease-슬픔">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <div class="quantity-display" id="quantity-슬픔">0</div>
+                        <button class="quantity-btn" onclick="increaseEmotion('슬픔')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="emotion-card bg-red-500 hover:bg-red-400 text-white rounded-xl shadow-lg relative">
+                    <div class="emotion-main" onclick="addEmotion('화남')">
+                        <div class="emotion-emoji">😠</div>
+                        <div class="emotion-name">화남/짜증</div>
+                        <div class="emotion-count" id="count-화남">0명</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="decreaseEmotion('화남')" id="decrease-화남">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <div class="quantity-display" id="quantity-화남">0</div>
+                        <button class="quantity-btn" onclick="increaseEmotion('화남')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="emotion-card bg-orange-500 hover:bg-orange-400 text-white rounded-xl shadow-lg relative">
+                    <div class="emotion-main" onclick="addEmotion('불안')">
+                        <div class="emotion-emoji">😰</div>
+                        <div class="emotion-name">불안/걱정</div>
+                        <div class="emotion-count" id="count-불안">0명</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="decreaseEmotion('불안')" id="decrease-불안">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <div class="quantity-display" id="quantity-불안">0</div>
+                        <button class="quantity-btn" onclick="increaseEmotion('불안')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="emotion-card bg-purple-600 hover:bg-purple-500 text-white rounded-xl shadow-lg relative">
+                    <div class="emotion-main" onclick="addEmotion('피곤')">
+                        <div class="emotion-emoji">😴</div>
+                        <div class="emotion-name">피곤/무기력</div>
+                        <div class="emotion-count" id="count-피곤">0명</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="decreaseEmotion('피곤')" id="decrease-피곤">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <div class="quantity-display" id="quantity-피곤">0</div>
+                        <button class="quantity-btn" onclick="increaseEmotion('피곤')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="emotion-card bg-pink-500 hover:bg-pink-400 text-white rounded-xl shadow-lg relative">
+                    <div class="emotion-main" onclick="addEmotion('설렘')">
+                        <div class="emotion-emoji">🤗</div>
+                        <div class="emotion-name">설렘/기대</div>
+                        <div class="emotion-count" id="count-설렘">0명</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="decreaseEmotion('설렘')" id="decrease-설렘">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <div class="quantity-display" id="quantity-설렘">0</div>
+                        <button class="quantity-btn" onclick="increaseEmotion('설렘')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="emotion-card bg-red-700 hover:bg-red-600 text-white rounded-xl shadow-lg relative">
+                    <div class="emotion-main" onclick="addEmotion('스트레스')">
+                        <div class="emotion-emoji">😤</div>
+                        <div class="emotion-name">스트레스</div>
+                        <div class="emotion-count" id="count-스트레스">0명</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="decreaseEmotion('스트레스')" id="decrease-스트레스">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <div class="quantity-display" id="quantity-스트레스">0</div>
+                        <button class="quantity-btn" onclick="increaseEmotion('스트레스')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 오늘 통계 페이지 -->
+        <div id="today-stats-page" class="tab-content hidden">
+            <div class="bg-white bg-opacity-10 rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-white mb-6 text-center">오늘의 감정 통계</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="chart-container">
+                        <canvas id="todayChart"></canvas>
+                    </div>
+                    
+                    <div class="text-white">
+                        <div class="bg-white bg-opacity-20 rounded-lg p-4 mb-4">
+                            <h3 class="text-lg font-bold mb-2">📊 요약</h3>
+                            <p>총 참여 인원: <span id="total-participants" class="font-bold">0명</span></p>
+                            <p>가장 많은 감정: <span id="top-emotion" class="font-bold">-</span></p>
+                        </div>
+                        
+                        <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                            <h3 class="text-lg font-bold mb-2">💡 오늘의 조언</h3>
+                            <p id="advice-message" class="text-sm leading-relaxed">아직 체크인이 없습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 주간 통계 페이지 -->
+        <div id="weekly-stats-page" class="tab-content hidden">
+            <div class="bg-white bg-opacity-10 rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-white mb-6 text-center">주간 감정 트렌드</h2>
+                
+                <div class="chart-container">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+                
+                <div class="mt-6 bg-white bg-opacity-20 rounded-lg p-4">
+                    <h3 class="text-lg font-bold text-white mb-2">📈 주간 인사이트</h3>
+                    <p id="weekly-insight" class="text-white text-sm">주간 데이터를 분석 중입니다...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 관리자 페이지 -->
+        <div id="admin-page" class="tab-content hidden">
+            <div class="bg-white bg-opacity-10 rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-white mb-6 text-center">관리자 페이지</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- 데이터 관리 -->
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                        <h3 class="text-lg font-bold text-white mb-4">📊 데이터 관리</h3>
+                        
+                        <button onclick="exportData()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2 transition-all">
+                            <i class="fas fa-download mr-2"></i>데이터 내보내기 (CSV)
+                        </button>
+                        
+                        <button onclick="clearTodayData()" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mb-2 transition-all">
+                            <i class="fas fa-refresh mr-2"></i>오늘 데이터 초기화
+                        </button>
+                        
+                        <button onclick="showAllData()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-2 transition-all">
+                            <i class="fas fa-eye mr-2"></i>전체 데이터 보기
+                        </button>
+                    </div>
+                    
+                    <!-- 데이터 복원 -->
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                        <h3 class="text-lg font-bold text-white mb-4">📥 데이터 복원</h3>
+                        
+                        <input type="file" id="restore-file" accept=".json,.csv" class="w-full bg-white bg-opacity-20 text-white rounded py-2 px-3 mb-2">
+                        
+                        <button onclick="restoreData()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mb-2 transition-all">
+                            <i class="fas fa-upload mr-2"></i>데이터 복원하기
+                        </button>
+                        
+                        <div id="restore-log" class="text-xs text-white opacity-80 mt-2 max-h-32 overflow-y-auto"></div>
+                    </div>
+                </div>
+                
+                <!-- 전체 데이터 보기 -->
+                <div id="all-data-section" class="mt-6 bg-white bg-opacity-20 rounded-lg p-4 hidden">
+                    <h3 class="text-lg font-bold text-white mb-4">📋 저장된 모든 데이터</h3>
+                    <div id="all-data-content" class="text-white text-sm max-h-64 overflow-y-auto"></div>
+                </div>
+                
+                <!-- 디버그 정보 -->
+                <div class="mt-6 bg-white bg-opacity-20 rounded-lg p-4">
+                    <h3 class="text-lg font-bold text-white mb-4">🔍 시스템 정보</h3>
+                    <div id="debug-info" class="text-white text-xs"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 전역 변수
+        let todayData = {};
+        let historyData = {};
+        let todayChart = null;
+        let weeklyChart = null;
+        
+        const emotions = ['기쁨', '보통', '슬픔', '화남', '불안', '피곤', '설렘', '스트레스'];
+        const emotionColors = {
+            '기쁨': '#FCD34D',
+            '보통': '#9CA3AF', 
+            '슬픔': '#3B82F6',
+            '화남': '#EF4444',
+            '불안': '#F97316',
+            '피곤': '#7C3AED',
+            '설렘': '#EC4899',
+            '스트레스': '#B91C1C'
+        };
+
+        // 현재 날짜 가져오기 (항상 실제 오늘 날짜)
+        function getTodayString() {
+            const today = new Date();
+            return today.getFullYear() + '-' + 
+                   String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                   String(today.getDate()).padStart(2, '0');
+        }
+
+        // 날짜 표시 포맷
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.getFullYear() + '년 ' + 
+                   (date.getMonth() + 1) + '월 ' + 
+                   date.getDate() + '일';
+        }
+
+        // 초기화
+        function init() {
+            const todayString = getTodayString();
+            document.getElementById('currentDate').textContent = formatDate(todayString);
+            
+            // 로컬스토리지에서 데이터 로드
+            loadData();
+            
+            // 날짜가 바뀌었는지 확인
+            checkDateChange();
+            
+            updateDisplay();
+            updateDebugInfo();
+        }
+
+        // 데이터 로드
+        function loadData() {
+            const savedData = localStorage.getItem('emotionData');
+            const savedHistory = localStorage.getItem('emotionHistory');
+            
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    todayData = data.todayData || {};
+                    historyData = data.historyData || {};
+                } catch (e) {
+                    console.error('데이터 로드 오류:', e);
+                    todayData = {};
+                    historyData = {};
+                }
+            }
+            
+            if (savedHistory) {
+                try {
+                    const history = JSON.parse(savedHistory);
+                    Object.assign(historyData, history);
+                } catch (e) {
+                    console.error('히스토리 로드 오류:', e);
+                }
+            }
+
+            // 오늘 데이터 초기화 (실제 오늘 날짜 기준)
+            const todayString = getTodayString();
+            if (!todayData[todayString]) {
+                todayData[todayString] = {};
+                emotions.forEach(emotion => {
+                    todayData[todayString][emotion] = 0;
+                });
+            }
+        }
+
+        // 날짜 변경 확인 및 처리
+        function checkDateChange() {
+            const todayString = getTodayString();
+            const lastSavedDate = localStorage.getItem('lastSavedDate');
+            
+            if (lastSavedDate && lastSavedDate !== todayString) {
+                // 날짜가 바뀜 - 어제 데이터를 히스토리로 이동
+                if (todayData[lastSavedDate]) {
+                    historyData[lastSavedDate] = { ...todayData[lastSavedDate] };
+                    delete todayData[lastSavedDate];
+                }
+                
+                // 오늘 데이터 초기화
+                todayData[todayString] = {};
+                emotions.forEach(emotion => {
+                    todayData[todayString][emotion] = 0;
+                });
+                
+                saveData();
+            }
+            
+            localStorage.setItem('lastSavedDate', todayString);
+        }
+
+        // 데이터 저장
+        function saveData() {
+            const dataToSave = {
+                todayData: todayData,
+                historyData: historyData,
+                lastSaved: new Date().toISOString(),
+                version: '3.5'
+            };
+            
+            localStorage.setItem('emotionData', JSON.stringify(dataToSave));
+            localStorage.setItem('emotionHistory', JSON.stringify(historyData));
+            localStorage.setItem('lastSavedDate', getTodayString());
+        }
+
+        // 감정 추가
+        function addEmotion(emotion) {
+            const todayString = getTodayString();
+            
+            if (!todayData[todayString]) {
+                todayData[todayString] = {};
+                emotions.forEach(e => {
+                    todayData[todayString][e] = 0;
+                });
+            }
+            
+            todayData[todayString][emotion]++;
+            updateDisplay();
+            saveData();
+        }
+
+        // 감정 증가
+        function increaseEmotion(emotion) {
+            const todayString = getTodayString();
+            
+            if (!todayData[todayString]) {
+                todayData[todayString] = {};
+                emotions.forEach(e => {
+                    todayData[todayString][e] = 0;
+                });
+            }
+            
+            todayData[todayString][emotion]++;
+            updateDisplay();
+            saveData();
+        }
+
+        // 감정 감소
+        function decreaseEmotion(emotion) {
+            const todayString = getTodayString();
+            
+            if (!todayData[todayString]) {
+                todayData[todayString] = {};
+                emotions.forEach(e => {
+                    todayData[todayString][e] = 0;
+                });
+            }
+            
+            if (todayData[todayString][emotion] > 0) {
+                todayData[todayString][emotion]--;
+                updateDisplay();
+                saveData();
+            }
+        }
+
+        // 화면 업데이트
+        function updateDisplay() {
+            const todayString = getTodayString();
+            const today = todayData[todayString] || {};
+            
+            // 버튼 카운트 업데이트
+            emotions.forEach(emotion => {
+                const count = today[emotion] || 0;
+                const element = document.getElementById(`count-${emotion}`);
+                const quantityElement = document.getElementById(`quantity-${emotion}`);
+                const decreaseBtn = document.getElementById(`decrease-${emotion}`);
+                
+                if (element) {
+                    element.textContent = count + '명';
+                }
+                if (quantityElement) {
+                    quantityElement.textContent = count;
+                }
+                if (decreaseBtn) {
+                    decreaseBtn.disabled = count === 0;
+                }
+            });
+            
+            updateTodayStats();
+            updateWeeklyStats();
+        }
+
+        // 오늘 통계 업데이트
+        function updateTodayStats() {
+            const todayString = getTodayString();
+            const today = todayData[todayString] || {};
+            
+            const total = Object.values(today).reduce((sum, count) => sum + count, 0);
+            document.getElementById('total-participants').textContent = total + '명';
+            
+            if (total === 0) {
+                document.getElementById('top-emotion').textContent = '-';
+                document.getElementById('advice-message').textContent = '아직 체크인이 없습니다.';
+                return;
+            }
+            
+            // 가장 많은 감정 찾기
+            let topEmotion = '';
+            let maxCount = 0;
+            let topPercentage = 0;
+            
+            emotions.forEach(emotion => {
+                const count = today[emotion] || 0;
+                if (count > maxCount) {
+                    maxCount = count;
+                    topEmotion = emotion;
+                    topPercentage = Math.round((count / total) * 100);
+                }
+            });
+            
+            document.getElementById('top-emotion').textContent = `${topEmotion} (${topPercentage}%)`;
+            
+            // 조언 메시지 설정
+            setAdviceMessage(topEmotion, topPercentage);
+            
+            // 차트 업데이트
+            updateTodayChart(today, total);
+        }
+
+        // 조언 메시지 설정
+        function setAdviceMessage(emotion, percentage) {
+            const messages = {
+                '기쁨': {
+                    high: "우와! 오늘 우리반 에너지가 정말 좋네요! 이런 좋은 분위기를 친구들과 함께 나누어보는 건 어떨까요?",
+                    medium: "기쁜 마음이 가득한 하루네요! 긍정적인 에너지를 계속 유지해보아요.",
+                    low: "좋은 일이 있었나 봐요! 작은 기쁨도 소중히 간직해보세요."
+                },
+                '피곤': {
+                    high: "오늘 피곤한 친구들이 많네요. 잠깐 스트레칭하거나 깊게 숨쉬기를 해보는 건 어떨까요? 충분한 휴식도 중요해요!",
+                    medium: "조금 피곤한 하루인 것 같아요. 무리하지 말고 적당한 휴식을 취해보세요.",
+                    low: "피곤함을 느끼는 친구들이 있네요. 몸과 마음을 잘 돌봐주세요."
+                },
+                '스트레스': {
+                    high: "스트레스 받는 일이 있었나요? 친구들과 이야기를 나누거나 선생님께 도움을 요청해보세요. 혼자 해결하려 하지 말고 함께해요!",
+                    medium: "스트레스가 있는 하루군요. 깊게 숨을 쉬고 마음을 진정시켜보세요.",
+                    low: "약간의 스트레스가 있는 것 같아요. 가벼운 운동이나 좋아하는 활동을 해보세요."
+                },
+                '슬픔': {
+                    high: "마음이 무거운 날이군요. 괜찮아요, 누구에게나 그런 날이 있어요. 오늘은 서로를 더 따뜻하게 배려해보아요.",
+                    medium: "조금 우울한 기분인 것 같아요. 친구들과 함께 있으면 기분이 나아질 거예요.",
+                    low: "마음이 조금 무거운 친구들이 있네요. 서로 위로해주는 하루가 되길 바라요."
+                },
+                '화남': {
+                    high: "화가 나는 일이 있었나요? 깊게 숨을 쉬고 마음을 진정시켜보세요. 문제가 있다면 차분히 이야기로 해결해보아요.",
+                    medium: "짜증나는 일이 있었나 봐요. 잠시 마음을 가라앉히고 긍정적인 생각을 해보세요.",
+                    low: "화가 나는 친구들이 있네요. 마음을 차분히 가지고 서로 이해해보아요."
+                },
+                '불안': {
+                    high: "걱정이나 불안한 마음이 있는 것 같아요. 함께 이야기하면 해결책을 찾을 수 있을 거예요. 혼자 걱정하지 말고 도움을 요청해보세요.",
+                    medium: "불안한 마음이 있나 봐요. 친구들이나 선생님과 이야기해보세요.",
+                    low: "약간의 걱정이 있는 것 같아요. 긍정적으로 생각하려고 노력해보세요."
+                },
+                '설렘': {
+                    high: "설레는 일이 있나 봐요! 좋은 기대감을 친구들과 나누어보세요. 긍정적인 에너지가 더 커질 거예요!",
+                    medium: "기대되는 일이 있나 봐요! 설레는 마음을 간직하세요.",
+                    low: "좋은 일을 기대하는 친구들이 있네요. 희망찬 하루가 되길 바라요."
+                },
+                '보통': {
+                    high: "평온한 하루네요. 이런 안정적인 분위기도 좋아요. 오늘은 새로운 것에 도전해보는 건 어떨까요?",
+                    medium: "차분하고 안정적인 분위기예요. 이런 평온함도 소중해요.",
+                    low: "평범하지만 안정적인 하루네요. 작은 행복을 찾아보세요."
+                }
+            };
+            
+            const emotionMessages = messages[emotion];
+            let message = "오늘도 좋은 하루 보내세요!";
+            
+            if (emotionMessages) {
+                if (percentage >= 40) {
+                    message = emotionMessages.high;
+                } else if (percentage >= 25) {
+                    message = emotionMessages.medium;
+                } else {
+                    message = emotionMessages.low;
+                }
+            }
+            
+            document.getElementById('advice-message').textContent = message;
+        }
+
+        // 오늘 차트 업데이트
+        function updateTodayChart(data, total) {
+            const ctx = document.getElementById('todayChart').getContext('2d');
+            
+            if (todayChart) {
+                todayChart.destroy();
+            }
+            
+            const chartData = emotions.map(emotion => data[emotion] || 0);
+            const labels = emotions.map(emotion => {
+                const count = data[emotion] || 0;
+                const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+                return `${emotion} (${count}명, ${percentage}%)`;
+            });
+            
+            todayChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: chartData,
+                        backgroundColor: emotions.map(emotion => emotionColors[emotion]),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white',
+                                font: {
+                                    size: 12
+                                },
+                                filter: function(legendItem, chartData) {
+                                    return chartData.datasets[0].data[legendItem.index] > 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 주간 통계 업데이트
+        function updateWeeklyStats() {
+            const weeklyData = getWeeklyData();
+            updateWeeklyChart(weeklyData);
+            updateWeeklyInsight(weeklyData);
+        }
+
+        // 주간 데이터 가져오기
+        function getWeeklyData() {
+            const today = new Date();
+            const weekData = {};
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateString = date.getFullYear() + '-' + 
+                                 String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+                                 String(date.getDate()).padStart(2, '0');
+                
+                const dayName = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
+                
+                // 오늘 데이터 또는 히스토리 데이터에서 가져오기
+                const dayData = todayData[dateString] || historyData[dateString] || {};
+                
+                weekData[dayName] = dayData;
+            }
+            
+            return weekData;
+        }
+
+        // 주간 차트 업데이트
+        function updateWeeklyChart(weeklyData) {
+            const ctx = document.getElementById('weeklyChart').getContext('2d');
+            
+            if (weeklyChart) {
+                weeklyChart.destroy();
+            }
+            
+            const days = Object.keys(weeklyData);
+            const datasets = emotions.map(emotion => ({
+                label: emotion,
+                data: days.map(day => weeklyData[day][emotion] || 0),
+                backgroundColor: emotionColors[emotion],
+                borderColor: emotionColors[emotion],
+                borderWidth: 1
+            }));
+            
+            weeklyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: days,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 주간 인사이트 업데이트
+        function updateWeeklyInsight(weeklyData) {
+            const days = Object.keys(weeklyData);
+            const insights = [];
+            
+            // 요일별 주요 감정 분석
+            days.forEach(day => {
+                const dayData = weeklyData[day];
+                const total = Object.values(dayData).reduce((sum, count) => sum + count, 0);
+                
+                if (total > 0) {
+                    let topEmotion = '';
+                    let maxCount = 0;
+                    
+                    emotions.forEach(emotion => {
+                        const count = dayData[emotion] || 0;
+                        if (count > maxCount) {
+                            maxCount = count;
+                            topEmotion = emotion;
+                        }
+                    });
+                    
+                    const percentage = Math.round((maxCount / total) * 100);
+                    if (percentage >= 30) {
+                        insights.push(`${day}요일에는 '${topEmotion}'이 ${percentage}%로 많았어요.`);
+                    }
+                }
+            });
+            
+            const insightText = insights.length > 0 ? 
+                insights.join(' ') : 
+                '아직 충분한 주간 데이터가 없습니다. 더 많은 데이터가 쌓이면 패턴을 분석해드릴게요!';
+                
+            document.getElementById('weekly-insight').textContent = insightText;
+        }
+
+        // 탭 전환
+        function showTab(tabName) {
+            // 모든 탭 숨기기
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // 모든 탭 버튼 비활성화
+            document.querySelectorAll('[id^="tab-"]').forEach(btn => {
+                btn.classList.remove('tab-active');
+            });
+            
+            // 선택된 탭 보이기
+            document.getElementById(tabName + '-page').classList.remove('hidden');
+            document.getElementById('tab-' + tabName).classList.add('tab-active');
+            
+            // 차트가 있는 탭의 경우 차트 업데이트
+            if (tabName === 'today-stats') {
+                setTimeout(updateTodayStats, 100);
+            } else if (tabName === 'weekly-stats') {
+                setTimeout(updateWeeklyStats, 100);
+            } else if (tabName === 'admin') {
+                updateDebugInfo();
+            }
+        }
+
+        // 데이터 내보내기
+        function exportData() {
+            const allData = { ...historyData, ...todayData };
+            let csvContent = "날짜,감정,횟수,비율\n";
+            
+            Object.keys(allData).forEach(date => {
+                const dayData = allData[date];
+                const total = Object.values(dayData).reduce((sum, count) => sum + count, 0);
+                
+                emotions.forEach(emotion => {
+                    const count = dayData[emotion] || 0;
+                    const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+                    csvContent += `${date},${emotion},${count},${percentage}%\n`;
+                });
+            });
+            
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `감정체크인_${getTodayString()}.csv`;
+            link.click();
+        }
+
+        // 오늘 데이터 초기화
+        function clearTodayData() {
+            if (confirm('오늘 데이터를 정말 초기화하시겠습니까?')) {
+                const todayString = getTodayString();
+                todayData[todayString] = {};
+                emotions.forEach(emotion => {
+                    todayData[todayString][emotion] = 0;
+                });
+                updateDisplay();
+                saveData();
+                alert('오늘 데이터가 초기화되었습니다.');
+            }
+        }
+
+        // 전체 데이터 보기
+        function showAllData() {
+            const section = document.getElementById('all-data-section');
+            const content = document.getElementById('all-data-content');
+            
+            let htmlContent = '<h4 class="font-bold mb-2">📅 오늘 데이터</h4>';
+            Object.keys(todayData).forEach(date => {
+                const dayData = todayData[date];
+                const total = Object.values(dayData).reduce((sum, count) => sum + count, 0);
+                htmlContent += `<div class="mb-2"><strong>${formatDate(date)}</strong> (총 ${total}명)<br>`;
+                emotions.forEach(emotion => {
+                    const count = dayData[emotion] || 0;
+                    if (count > 0) {
+                        htmlContent += `${emotion}: ${count}명 `;
+                    }
+                });
+                htmlContent += '</div>';
+            });
+            
+            htmlContent += '<h4 class="font-bold mb-2 mt-4">📚 히스토리 데이터</h4>';
+            Object.keys(historyData).forEach(date => {
+                const dayData = historyData[date];
+                const total = Object.values(dayData).reduce((sum, count) => sum + count, 0);
+                htmlContent += `<div class="mb-2"><strong>${formatDate(date)}</strong> (총 ${total}명)<br>`;
+                emotions.forEach(emotion => {
+                    const count = dayData[emotion] || 0;
+                    if (count > 0) {
+                        htmlContent += `${emotion}: ${count}명 `;
+                    }
+                });
+                htmlContent += '</div>';
+            });
+            
+            content.innerHTML = htmlContent;
+            section.classList.toggle('hidden');
+        }
+
+        // 데이터 복원 (CSV 지원 추가)
+        function restoreData() {
+            const fileInput = document.getElementById('restore-file');
+            const file = fileInput.files[0];
+            const logDiv = document.getElementById('restore-log');
+            
+            if (!file) {
+                alert('파일을 선택해주세요.');
+                return;
+            }
+            
+            logDiv.innerHTML = '📁 파일 읽기 중...<br>';
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    let data = {};
+                    
+                    logDiv.innerHTML += '✅ 파일 읽기 성공<br>';
+                    
+                    // JSON 또는 CSV 파싱
+                    if (file.name.endsWith('.json') || content.trim().startsWith('{')) {
+                        // JSON 파일 처리
+                        const jsonData = JSON.parse(content);
+                        logDiv.innerHTML += '✅ JSON 파싱 성공<br>';
+                        
+                        // 데이터 구조 확인 및 변환
+                        if (jsonData.todayData || jsonData.historyData) {
+                            data = { ...jsonData.todayData, ...jsonData.historyData };
+                        } else {
+                            data = jsonData;
+                        }
+                    } else {
+                        // CSV 파일 처리
+                        logDiv.innerHTML += '📊 CSV 파싱 시작<br>';
+                        const lines = content.split('\n');
+                        
+                        if (lines.length < 2) {
+                            throw new Error('CSV 파일이 비어있거나 형식이 잘못되었습니다.');
+                        }
+                        
+                        // 헤더 확인
+                        const header = lines[0].trim();
+                        if (!header.includes('날짜') || !header.includes('감정') || !header.includes('횟수')) {
+                            throw new Error('CSV 파일 형식이 올바르지 않습니다. "날짜,감정,횟수,비율" 형식이어야 합니다.');
+                        }
+                        
+                        // 데이터 파싱
+                        for (let i = 1; i < lines.length; i++) {
+                            const line = lines[i].trim();
+                            if (!line) continue;
+                            
+                            const parts = line.split(',');
+                            if (parts.length < 3) continue;
+                            
+                            const date = parts[0].trim();
+                            const emotion = parts[1].trim();
+                            const count = parseInt(parts[2].trim()) || 0;
+                            
+                            // 날짜 형식 검증
+                            if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+                            
+                            // 감정 검증
+                            if (!emotions.includes(emotion)) continue;
+                            
+                            // 데이터 저장
+                            if (!data[date]) {
+                                data[date] = {};
+                                emotions.forEach(e => {
+                                    data[date][e] = 0;
+                                });
+                            }
+                            
+                            data[date][emotion] = count;
+                        }
+                        
+                        logDiv.innerHTML += '✅ CSV 파싱 완료<br>';
+                    }
+                    
+                    // 데이터 복원
+                    let restoredCount = 0;
+                    const todayString = getTodayString();
+                    
+                    Object.keys(data).forEach(date => {
+                        if (date === 'meta' || date === 'exportDate' || date === 'version') return;
+                        
+                        const dayData = data[date];
+                        
+                        // 날짜 검증
+                        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+                        
+                        if (date === todayString) {
+                            // 오늘 데이터는 todayData에 저장
+                            logDiv.innerHTML += `📅 오늘 데이터 (${date}) 복원 중...<br>`;
+                            todayData[date] = {};
+                            emotions.forEach(emotion => {
+                                todayData[date][emotion] = dayData[emotion] || 0;
+                            });
+                        } else {
+                            // 과거 데이터는 historyData에 저장
+                            logDiv.innerHTML += `📚 과거 데이터 (${date}) 복원 중...<br>`;
+                            historyData[date] = {};
+                            emotions.forEach(emotion => {
+                                historyData[date][emotion] = dayData[emotion] || 0;
+                            });
+                        }
+                        restoredCount++;
+                    });
+                    
+                    logDiv.innerHTML += `✅ ${restoredCount}개 날짜 데이터 복원 완료<br>`;
+                    logDiv.innerHTML += '💾 데이터 저장 중...<br>';
+                    
+                    saveData();
+                    updateDisplay();
+                    
+                    logDiv.innerHTML += '✅ 복원 완료!<br>';
+                    logDiv.innerHTML += `📊 현재 오늘: ${todayString}<br>`;
+                    
+                    alert(`데이터 복원이 완료되었습니다!\n복원된 날짜: ${restoredCount}개`);
+                    
+                } catch (error) {
+                    console.error('복원 오류:', error);
+                    logDiv.innerHTML += `❌ 오류 발생: ${error.message}<br>`;
+                    alert('데이터 복원 중 오류가 발생했습니다: ' + error.message);
+                }
+            };
+            
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        // 디버그 정보 업데이트
+        function updateDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            const todayString = getTodayString();
+            
+            const info = [
+                `현재 날짜: ${todayString}`,
+                `저장된 오늘 데이터 키: ${Object.keys(todayData).join(', ') || '없음'}`,
+                `저장된 히스토리 키: ${Object.keys(historyData).join(', ') || '없음'}`,
+                `로컬스토리지 크기: ${JSON.stringify(todayData).length + JSON.stringify(historyData).length} bytes`,
+                `마지막 저장: ${localStorage.getItem('lastSavedDate') || '없음'}`,
+                `시스템 버전: 3.5`
+            ];
+            
+            debugDiv.innerHTML = info.join('<br>');
+        }
+
+        // 페이지 로드 시 초기화
+        window.onload = function() {
+            init();
+        };
+    </script>
+</body>
+</html>
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDsXB6d2qb3W2pjSvxPEw7ahopuSLHwBd9dCl0AzkPd9buFC7J4gZDPJ%2F1eK6af1tMCgjLLOn7zkp1sEq2QvdbJOT%2B4gZSOXAJVicQFhUxwGZ%2Fip8o%2FBNjIHpoPrErzwc8OKyMp850bcXNyzwWmg6nfbMwCub2%2BiIpod8vaTY2x9JoxpNH2JXD%2B8L%2FMmlJQNB5blDNz%2F0xKTdTbfrxROzwoRYlqGoP3r4iA%2BBRLklujSFhsIC6Aduiu7MeZSctaPNsg%2Fn0yrchzWWS9i%2BGErGsZUzGMC7RxfbwjQQpAMfnywac0ISsYKJAxYAhlOFIJIA%2B9HMz3pvmrdaXP6Lfwi%2F3tGR7QunrsDwQslCqepzFwT07W8geYQh8mpOYncVJTDAfZss1SYDB5qGWPgnxUdo0DqtPI%2BVRjaJSMI2ELxTL26I9IqHfRz8QCyZvRs8wA%2F7DzZSaOYC3GHuOFp%2FICtOWJ9hSHj9gqxasGASTmVpUZ9yzxHwLif0X7heaIDU5wMTFAa%2Fv7U2lwWd3TDD43Wd5rc%3D";
+        window.__genspark_locale = "ko-KR";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDsXB6d2qb3W2pjSvxPEw7ahopuSLHwBd9dCl0AzkPd9buFC7J4gZDPJ/1eK6af1tMCgjLLOn7zkp1sEq2QvdbJOT+4gZSOXAJVicQFhUxwGZ/ip8o/BNjIHpoPrErzwc8OKyMp850bcXNyzwWmg6nfbMwCub2+iIpod8vaTY2x9JoxpNH2JXD+8L/MmlJQNB5blDNz/0xKTdTbfrxROzwoRYlqGoP3r4iA+BRLklujSFhsIC6Aduiu7MeZSctaPNsg/n0yrchzWWS9i+GErGsZUzGMC7RxfbwjQQpAMfnywac0ISsYKJAxYAhlOFIJIA+9HMz3pvmrdaXP6Lfwi/3tGR7QunrsDwQslCqepzFwT07W8geYQh8mpOYncVJTDAfZss1SYDB5qGWPgnxUdo0DqtPI+VRjaJSMI2ELxTL26I9IqHfRz8QCyZvRs8wA/7DzZSaOYC3GHuOFp/ICtOWJ9hSHj9gqxasGASTmVpUZ9yzxHwLif0X7heaIDU5wMTFAa/v7U2lwWd3TDD43Wd5rc=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    
